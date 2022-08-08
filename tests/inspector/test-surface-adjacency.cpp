@@ -197,6 +197,7 @@ void check_non_adjacency_no_bijection3D()
     builder->create_triangle( { 0, 1, 2 } );
     builder->create_triangle( { 2, 1, 3 } );
     builder->create_triangle( { 4, 1, 2 } );
+    //polygon edge (0,1) adjacent to polygon 1
     builder->set_polygon_adjacent( { { 0, 1 } }, 1 );
     builder->set_polygon_adjacent( { { 1, 0 } }, 0 );
     builder->set_polygon_adjacent( { { 2, 1 } }, 1 );

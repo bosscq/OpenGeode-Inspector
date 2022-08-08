@@ -27,9 +27,10 @@ option(OPENGEODE_INSPECTOR_WITH_TESTS "Compile test projects" ON)
 option(OPENGEODE_INSPECTOR_WITH_PYTHON "Compile Python bindings" OFF)
 
 # Get OpenGeode-inspector dependencies
-find_package(OpenGeode REQUIRED)
+#find_package(OpenGeode REQUIRED)
+find_package(absl REQUIRED)
 find_package(Async++ REQUIRED)
-find_package(OpenGeode-IO REQUIRED)
+#find_package(OpenGeode-IO REQUIRED)
 
 #------------------------------------------------------------------------------------------------
 # Configure the OpenGeode-inspector libraries
