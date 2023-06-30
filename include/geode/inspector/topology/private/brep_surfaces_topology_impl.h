@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,6 +74,9 @@ namespace geode
                 index_t unique_vertex_index ) const;
 
             bool vertex_is_part_of_invalid_multiple_surfaces(
+                index_t unique_vertex_index ) const;
+
+            bool vertex_is_part_of_line_and_not_on_surface_border(
                 index_t unique_vertex_index ) const;
 
         private:

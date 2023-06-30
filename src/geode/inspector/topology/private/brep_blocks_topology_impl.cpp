@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,15 @@
 
 #include <geode/inspector/topology/private/brep_blocks_topology_impl.h>
 
+#include <geode/basic/algorithm.h>
 #include <geode/basic/logger.h>
 
 #include <geode/model/mixin/core/block.h>
-#include <geode/model/mixin/core/relationships.h>
+#include <geode/model/mixin/core/line.h>
 #include <geode/model/mixin/core/surface.h>
 #include <geode/model/representation/core/brep.h>
+
+#include <geode/inspector/topology/private/topology_helpers.h>
 
 namespace geode
 {
@@ -48,22 +51,42 @@ namespace geode
         bool BRepBlocksTopologyImpl::brep_vertex_blocks_topology_is_valid(
             index_t unique_vertex_index ) const
         {
-            const auto blocks = brep_.mesh_component_vertices(
-                unique_vertex_index, Block3D::component_type_static() );
-            if( blocks.size() == 2 )
+            const auto block_uuids =
+                components_uuids( brep_.component_mesh_vertices(
+                    unique_vertex_index, Block3D::component_type_static() ) );
+            if( block_uuids.size() == 2 )
             {
-                for( const auto surface :
-                    brep_.mesh_component_vertices( unique_vertex_index,
+                for( const auto& surface :
+                    brep_.component_mesh_vertices( unique_vertex_index,
                         Surface3D::component_type_static() ) )
                 {
                     if( brep_.Relationships::is_boundary(
-                            surface.component_id.id(),
-                            blocks[0].component_id.id() )
+                            surface.component_id.id(), block_uuids[0] )
                         && brep_.Relationships::is_boundary(
-                            surface.component_id.id(),
-                            blocks[1].component_id.id() ) )
+                            surface.component_id.id(), block_uuids[1] ) )
                     {
                         return true;
+                    }
+                }
+                for( const auto& line :
+                    brep_.component_mesh_vertices(
+                        unique_vertex_index, Line3D::component_type_static() ) )
+                {
+                    for( const auto& surface :
+                        brep_.component_mesh_vertices( unique_vertex_index,
+                            Surface3D::component_type_static() ) )
+                    {
+                        if( brep_.Relationships::is_boundary(
+                                line.component_id.id(),
+                                surface.component_id.id() )
+                            && ( brep_.Relationships::is_boundary(
+                                     surface.component_id.id(), block_uuids[0] )
+                                 || brep_.Relationships::is_boundary(
+                                     surface.component_id.id(),
+                                     block_uuids[1] ) ) )
+                        {
+                            return true;
+                        }
                     }
                 }
                 if( verbose_ )
@@ -71,7 +94,8 @@ namespace geode
                     Logger::info( "Unique vertex with index ",
                         unique_vertex_index,
                         " is part of two blocks, but not of a surface boundary "
-                        "to the two blocks." );
+                        "to the two blocks, nor of a line boundary to one "
+                        "of the blocks incident surfaces." );
                 }
                 return false;
             }

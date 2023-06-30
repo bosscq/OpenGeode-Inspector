@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,8 +49,8 @@ namespace geode
                 colocated_points_groups() const;
 
         private:
-            typename NNSearch< dimension >::ColocatedInfo mesh_colocation_info_;
-            bool verbose_;
+            const Mesh& mesh_;
+            DEBUG_CONST bool verbose_;
         };
     } // namespace detail
 } // namespace geode

@@ -1,4 +1,4 @@
-# Copyright (c) 2019 - 2022 Geode-solutions
+# Copyright (c) 2019 - 2023 Geode-solutions
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,7 @@
 # SOFTWARE.
 
 add_geode_test(
-    SOURCE "test-edgedcurve-degeneration.cpp"
+    SOURCE "test-surface-adjacency.cpp"
     DEPENDENCIES
         OpenGeode::basic
         OpenGeode::geometry
@@ -28,7 +28,7 @@ add_geode_test(
 )
 
 add_geode_test(
-    SOURCE "test-surface-degeneration.cpp"
+    SOURCE "test-solid-adjacency.cpp"
     DEPENDENCIES
         OpenGeode::basic
         OpenGeode::geometry
@@ -37,16 +37,7 @@ add_geode_test(
 )
 
 add_geode_test(
-    SOURCE "test-solid-degeneration.cpp"
-    DEPENDENCIES
-        OpenGeode::basic
-        OpenGeode::geometry
-        OpenGeode::mesh
-        ${PROJECT_NAME}::inspector
-)
-
-add_geode_test(
-    SOURCE "test-pointset-colocation.cpp"
+    SOURCE "test-pointset.cpp"
     DEPENDENCIES
         OpenGeode::basic
         OpenGeode::geometry
@@ -82,7 +73,43 @@ add_geode_test(
 )
 
 add_geode_test(
-    SOURCE "test-surface-adjacency.cpp"
+    SOURCE "test-edgedcurve-degeneration.cpp"
+    DEPENDENCIES
+        OpenGeode::basic
+        OpenGeode::geometry
+        OpenGeode::mesh
+        ${PROJECT_NAME}::inspector
+)
+
+add_geode_test(
+    SOURCE "test-surface-degeneration.cpp"
+    DEPENDENCIES
+        OpenGeode::basic
+        OpenGeode::geometry
+        OpenGeode::mesh
+        ${PROJECT_NAME}::inspector
+)
+
+add_geode_test(
+    SOURCE "test-solid-degeneration.cpp"
+    DEPENDENCIES
+        OpenGeode::basic
+        OpenGeode::geometry
+        OpenGeode::mesh
+        ${PROJECT_NAME}::inspector
+)
+
+add_geode_test(
+    SOURCE "test-surface-intersections.cpp"
+    DEPENDENCIES
+        OpenGeode::basic
+        OpenGeode::geometry
+        OpenGeode::mesh
+        ${PROJECT_NAME}::inspector
+)
+
+add_geode_test(
+    SOURCE "test-surface-curve-intersections.cpp"
     DEPENDENCIES
         OpenGeode::basic
         OpenGeode::geometry
@@ -100,17 +127,28 @@ add_geode_test(
 )
 
 add_geode_test(
-    SOURCE "test-brep-topology.cpp"
+    SOURCE "test-solid-manifold.cpp"
+    DEPENDENCIES
+        OpenGeode::basic
+        OpenGeode::geometry
+        OpenGeode::mesh
+        ${PROJECT_NAME}::inspector
+)
+
+add_geode_test(
+    SOURCE "test-brep.cpp"
     DEPENDENCIES
         OpenGeode::basic
         OpenGeode::geometry
         OpenGeode::mesh
         OpenGeode::model
+        OpenGeode-Geosciences::explicit
+        OpenGeode-GeosciencesIO::model
         ${PROJECT_NAME}::inspector
 )
 
 add_geode_test(
-    SOURCE "test-section-topology.cpp"
+    SOURCE "test-section.cpp"
     DEPENDENCIES
         OpenGeode::basic
         OpenGeode::geometry

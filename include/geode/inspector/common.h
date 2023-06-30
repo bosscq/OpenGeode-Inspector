@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,5 +24,11 @@
 #pragma once
 
 #include <geode/basic/common.h>
+#include <geode/basic/library.h>
 
 #include <geode/inspector/opengeode_inspector_inspector_export.h>
+
+namespace geode
+{
+    OPENGEODE_LIBRARY( opengeode_inspector_inspector_api, InspectorInspector );
+} // namespace geode

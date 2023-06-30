@@ -1,4 +1,4 @@
-# Copyright (c) 2019 - 2022 Geode-solutions
+# Copyright (c) 2019 - 2023 Geode-solutions
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,12 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.15)
     
 if(NOT TARGET OpenGeode-Inspector::inspector)
     project(OpenGeode-Inspector CXX)
     find_package(OpenGeode REQUIRED CONFIG)
     find_package(OpenGeode-Inspector REQUIRED CONFIG)
+    find_package(OpenGeode-Geosciences REQUIRED)
+    find_package(OpenGeode-GeosciencesIO REQUIRED)
     enable_testing()
 endif()
 

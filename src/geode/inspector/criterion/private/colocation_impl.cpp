@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,50 @@ namespace
         const geode::NNSearch< dimension > nnsearch{ mesh_points };
         return nnsearch.colocated_index_mapping( colocation_distance );
     }
+
+    template < geode::index_t dimension, typename Mesh >
+    std::vector< std::vector< geode::index_t > > colocated_points_groups(
+        const Mesh& mesh, double colocation_distance, bool verbose )
+    {
+        const auto mesh_colocation_info =
+            mesh_points_colocated_info< dimension, Mesh >(
+                mesh, colocation_distance );
+        std::vector< std::vector< geode::index_t > > colocated_points_indices(
+            mesh_colocation_info.nb_unique_points() );
+        for( const auto point_index :
+            geode::Indices{ mesh_colocation_info.colocated_mapping } )
+        {
+            colocated_points_indices[mesh_colocation_info
+                                         .colocated_mapping[point_index]]
+                .push_back( point_index );
+        }
+        const auto colocated_points_groups_end = std::remove_if(
+            colocated_points_indices.begin(), colocated_points_indices.end(),
+            []( const std::vector< geode::index_t >& colocated_points_group ) {
+                return colocated_points_group.size() < 2;
+            } );
+        colocated_points_indices.erase(
+            colocated_points_groups_end, colocated_points_indices.end() );
+        if( verbose )
+        {
+            for( const auto& colocated_points_group : colocated_points_indices )
+            {
+                std::string point_group_string{ "" };
+                for( const auto point_index : colocated_points_group )
+                {
+                    absl::StrAppend( &point_group_string, " ", point_index );
+                }
+                geode::Logger::info( "Vertices with indices",
+                    point_group_string, " are colocated at position [",
+                    mesh_colocation_info
+                        .unique_points[mesh_colocation_info.colocated_mapping
+                                           [colocated_points_group[0]]]
+                        .string(),
+                    "]." );
+            }
+        }
+        return colocated_points_indices;
+    }
 } // namespace
 
 namespace geode
@@ -57,9 +101,7 @@ namespace geode
         template < index_t dimension, typename Mesh >
         ColocationImpl< dimension, Mesh >::ColocationImpl(
             const Mesh& mesh, bool verbose )
-            : mesh_colocation_info_{ mesh_points_colocated_info< dimension,
-                Mesh >( mesh, global_epsilon ) },
-              verbose_( verbose )
+            : mesh_( mesh ), verbose_( verbose )
         {
         }
 
@@ -67,58 +109,37 @@ namespace geode
         bool
             ColocationImpl< dimension, Mesh >::mesh_has_colocated_points() const
         {
-            return mesh_colocation_info_.nb_colocated_points() > 0;
+            return mesh_points_colocated_info< dimension, Mesh >(
+                       mesh_, global_epsilon )
+                       .nb_colocated_points()
+                   > 0;
         }
 
         template < index_t dimension, typename Mesh >
         index_t ColocationImpl< dimension, Mesh >::nb_colocated_points() const
         {
-            return mesh_colocation_info_.nb_colocated_points();
+            const auto colocated_points_indices =
+                ::colocated_points_groups< dimension, Mesh >(
+                    mesh_, global_epsilon, verbose_ );
+            index_t nb_colocated{ 0 };
+            for( const auto& point_group : colocated_points_indices )
+            {
+                nb_colocated += point_group.size();
+            }
+            if( nb_colocated > 0 && verbose_ )
+            {
+                Logger::info( "Mesh has ", nb_colocated, " colocated points" );
+            }
+            return nb_colocated;
         }
 
         template < index_t dimension, typename Mesh >
         std::vector< std::vector< index_t > >
             ColocationImpl< dimension, Mesh >::colocated_points_groups() const
         {
-            std::vector< std::vector< index_t > > colocated_points_indices(
-                mesh_colocation_info_.nb_unique_points() );
-            for( const auto point_index :
-                Indices{ mesh_colocation_info_.colocated_mapping } )
-            {
-                colocated_points_indices[mesh_colocation_info_
-                                             .colocated_mapping[point_index]]
-                    .push_back( point_index );
-            }
-            const auto colocated_points_groups_end =
-                std::remove_if( colocated_points_indices.begin(),
-                    colocated_points_indices.end(),
-                    []( const std::vector< index_t >& colocated_points_group ) {
-                        return colocated_points_group.size() < 2;
-                    } );
-            colocated_points_indices.erase(
-                colocated_points_groups_end, colocated_points_indices.end() );
-            if( verbose_ )
-            {
-                for( const auto colocated_points_group :
-                    colocated_points_indices )
-                {
-                    for( const auto point_index :
-                        Range{ 1, colocated_points_group.size() } )
-                    {
-                        Logger::info( "Vertex with index ",
-                            colocated_points_group[0],
-                            " is colocated with vertex with index ",
-                            colocated_points_group[point_index],
-                            ", at position [",
-                            mesh_colocation_info_
-                                .unique_points
-                                    [mesh_colocation_info_.colocated_mapping
-                                            [colocated_points_group[0]]]
-                                .string(),
-                            "]." );
-                    }
-                }
-            }
+            const auto colocated_points_indices =
+                ::colocated_points_groups< dimension, Mesh >(
+                    mesh_, global_epsilon, verbose_ );
             return colocated_points_indices;
         }
 

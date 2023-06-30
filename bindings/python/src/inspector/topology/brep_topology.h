@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,11 +29,15 @@
     pybind11::class_< BRepTopologyInspector >(                                   \
         module, "BRepTopologyInspector" )                                        \
         .def( pybind11::init< const BRep& >() )                                  \
+        .def( pybind11::init< const BRep&, bool >() )                            \
         .def( "brep_topology_is_valid",                                          \
             &BRepTopologyInspector::brep_topology_is_valid )                     \
         .def( "brep_meshed_components_are_linked_to_a_unique_vertex",            \
             &BRepTopologyInspector::                                             \
                 brep_meshed_components_are_linked_to_a_unique_vertex )           \
+        .def( "brep_unique_vertices_are_linked_to_a_component_vertex",           \
+            &BRepTopologyInspector::                                             \
+                brep_unique_vertices_are_linked_to_a_component_vertex )          \
         .def( "nb_corners_not_linked_to_a_unique_vertex",                        \
             &BRepTopologyInspector::nb_corners_not_linked_to_a_unique_vertex )   \
         .def( "nb_lines_meshed_but_not_linked_to_a_unique_vertex",               \
@@ -45,6 +49,12 @@
         .def( "nb_blocks_meshed_but_not_linked_to_a_unique_vertex",              \
             &BRepTopologyInspector::                                             \
                 nb_blocks_meshed_but_not_linked_to_a_unique_vertex )             \
+        .def( "nb_unique_vertices_not_linked_to_a_component_vertex",             \
+            &BRepTopologyInspector::                                             \
+                nb_unique_vertices_not_linked_to_a_component_vertex )            \
+        .def( "unique_vertices_not_linked_to_a_component_vertex",                \
+            &BRepTopologyInspector::                                             \
+                unique_vertices_not_linked_to_a_component_vertex )               \
         .def( "invalid_components_topology_unique_vertices",                     \
             &BRepTopologyInspector::                                             \
                 invalid_components_topology_unique_vertices )                    \
@@ -55,9 +65,6 @@
         .def( "not_internal_nor_boundary_corner_vertices",                       \
             &BRepTopologyInspector::                                             \
                 not_internal_nor_boundary_corner_vertices )                      \
-        .def( "internal_with_multiple_incidences_corner_vertices",               \
-            &BRepTopologyInspector::                                             \
-                internal_with_multiple_incidences_corner_vertices )              \
         .def( "line_corners_without_boundary_status",                            \
             &BRepTopologyInspector::line_corners_without_boundary_status )       \
         .def( "part_of_not_boundary_nor_internal_line_unique_vertices",          \
@@ -85,6 +92,9 @@
         .def( "part_of_invalid_multiple_surfaces_unique_vertices",               \
             &BRepTopologyInspector::                                             \
                 part_of_invalid_multiple_surfaces_unique_vertices )              \
+        .def( "part_of_line_and_not_on_surface_border_unique_vertices",          \
+            &BRepTopologyInspector::                                             \
+                part_of_line_and_not_on_surface_border_unique_vertices )         \
         .def( "part_of_invalid_blocks_unique_vertices",                          \
             &BRepTopologyInspector::part_of_invalid_blocks_unique_vertices )
 

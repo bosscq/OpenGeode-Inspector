@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ namespace
         for( const auto unique_vertex_id :
             geode::Range{ section.nb_unique_vertices() } )
         {
-            if( section.has_mesh_component_vertices(
+            if( section.has_component_mesh_vertices(
                     unique_vertex_id, component_id ) )
             {
                 return true;
@@ -92,6 +92,10 @@ namespace geode
                 return false;
             }
             if( !section_meshed_components_are_linked_to_a_unique_vertex() )
+            {
+                return false;
+            }
+            if( !section_unique_vertices_are_linked_to_a_component_vertex() )
             {
                 return false;
             }
@@ -134,6 +138,18 @@ namespace geode
                 if( section_surface_is_meshed( section_, surface.id() )
                     && !section_has_unique_vertex_associated_to_component(
                         section_, surface.id() ) )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        bool section_unique_vertices_are_linked_to_a_component_vertex() const
+        {
+            for( const auto uv_id : Range{ section_.nb_unique_vertices() } )
+            {
+                if( section_.component_mesh_vertices( uv_id ).empty() )
                 {
                     return false;
                 }
@@ -202,6 +218,43 @@ namespace geode
             return counter;
         }
 
+        index_t nb_unique_vertices_not_linked_to_a_component_vertex() const
+        {
+            index_t nb_unlinked{ 0 };
+            for( const auto uv_id : Range{ section_.nb_unique_vertices() } )
+            {
+                if( section_.component_mesh_vertices( uv_id ).empty() )
+                {
+                    nb_unlinked++;
+                    if( verbose_ )
+                    {
+                        Logger::info( "Unique vertex with id ", uv_id,
+                            " is not linked to any component mesh vertex." );
+                    }
+                }
+            }
+            return nb_unlinked;
+        }
+
+        std::vector< index_t >
+            unique_vertices_not_linked_to_a_component_vertex() const
+        {
+            std::vector< index_t > unlinked_uv;
+            for( const auto uv_id : Range{ section_.nb_unique_vertices() } )
+            {
+                if( section_.component_mesh_vertices( uv_id ).empty() )
+                {
+                    unlinked_uv.push_back( uv_id );
+                    if( verbose_ )
+                    {
+                        Logger::info( "Unique vertex with id ", uv_id,
+                            " is not linked to any component mesh vertex." );
+                    }
+                }
+            }
+            return unlinked_uv;
+        }
+
         std::vector< index_t >
             invalid_components_topology_unique_vertices() const
         {
@@ -256,22 +309,6 @@ namespace geode
                 Range{ section_.nb_unique_vertices() } )
             {
                 if( corner_is_not_internal_nor_boundary( unique_vertex_id ) )
-                {
-                    invalid_unique_vertices.push_back( unique_vertex_id );
-                }
-            }
-            return invalid_unique_vertices;
-        }
-
-        std::vector< index_t >
-            internal_with_multiple_incidences_corner_vertices() const
-        {
-            std::vector< index_t > invalid_unique_vertices;
-            for( const auto unique_vertex_id :
-                Range{ section_.nb_unique_vertices() } )
-            {
-                if( corner_is_internal_with_multiple_incidences(
-                        unique_vertex_id ) )
                 {
                     invalid_unique_vertices.push_back( unique_vertex_id );
                 }
@@ -362,7 +399,23 @@ namespace geode
             for( const auto unique_vertex_id :
                 Range{ section_.nb_unique_vertices() } )
             {
-                if( !section_vertex_surfaces_topology_is_valid(
+                if( vertex_is_part_of_invalid_surfaces_topology(
+                        unique_vertex_id ) )
+                {
+                    invalid_unique_vertices.push_back( unique_vertex_id );
+                }
+            }
+            return invalid_unique_vertices;
+        }
+
+        std::vector< index_t >
+            part_of_line_and_not_on_surface_border_unique_vertices() const
+        {
+            std::vector< index_t > invalid_unique_vertices;
+            for( const auto unique_vertex_id :
+                Range{ section_.nb_unique_vertices() } )
+            {
+                if( vertex_is_part_of_line_and_not_on_surface_border(
                         unique_vertex_id ) )
                 {
                     invalid_unique_vertices.push_back( unique_vertex_id );
@@ -373,7 +426,7 @@ namespace geode
 
     private:
         const Section& section_;
-        bool verbose_;
+        DEBUG_CONST bool verbose_;
     };
 
     SectionTopologyInspector::SectionTopologyInspector( const Section& section )
@@ -400,6 +453,13 @@ namespace geode
         return impl_->section_meshed_components_are_linked_to_a_unique_vertex();
     }
 
+    bool SectionTopologyInspector::
+        section_unique_vertices_are_linked_to_a_component_vertex() const
+    {
+        return impl_
+            ->section_unique_vertices_are_linked_to_a_component_vertex();
+    }
+
     index_t SectionTopologyInspector::nb_corners_not_linked_to_a_unique_vertex()
         const
     {
@@ -416,6 +476,18 @@ namespace geode
         nb_surfaces_meshed_but_not_linked_to_a_unique_vertex() const
     {
         return impl_->nb_surfaces_meshed_but_not_linked_to_a_unique_vertex();
+    }
+
+    index_t SectionTopologyInspector::
+        nb_unique_vertices_not_linked_to_a_component_vertex() const
+    {
+        return impl_->nb_unique_vertices_not_linked_to_a_component_vertex();
+    }
+
+    std::vector< index_t > SectionTopologyInspector::
+        unique_vertices_not_linked_to_a_component_vertex() const
+    {
+        return impl_->unique_vertices_not_linked_to_a_component_vertex();
     }
 
     std::vector< index_t >
@@ -442,12 +514,6 @@ namespace geode
             const
     {
         return impl_->not_internal_nor_boundary_corner_vertices();
-    }
-
-    std::vector< index_t > SectionTopologyInspector::
-        internal_with_multiple_incidences_corner_vertices() const
-    {
-        return impl_->internal_with_multiple_incidences_corner_vertices();
     }
 
     std::vector< index_t >
@@ -488,5 +554,11 @@ namespace geode
             const
     {
         return impl_->part_of_invalid_surfaces_unique_vertices();
+    }
+
+    std::vector< index_t > SectionTopologyInspector::
+        part_of_line_and_not_on_surface_border_unique_vertices() const
+    {
+        return impl_->part_of_line_and_not_on_surface_border_unique_vertices();
     }
 } // namespace geode

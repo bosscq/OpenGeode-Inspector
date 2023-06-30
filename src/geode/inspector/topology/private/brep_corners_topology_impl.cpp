@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@
 
 #include <geode/model/mixin/core/corner.h>
 #include <geode/model/mixin/core/line.h>
-#include <geode/model/mixin/core/relationships.h>
 #include <geode/model/representation/core/brep.h>
 
 namespace geode
@@ -47,7 +46,7 @@ namespace geode
         bool BRepCornersTopologyImpl::brep_corner_topology_is_valid(
             index_t unique_vertex_index ) const
         {
-            const auto corners = brep_.mesh_component_vertices(
+            const auto corners = brep_.component_mesh_vertices(
                 unique_vertex_index, Corner3D::component_type_static() );
             if( corners.empty() )
             {
@@ -73,7 +72,7 @@ namespace geode
             {
                 return false;
             }
-            for( const auto& line : brep_.mesh_component_vertices(
+            for( const auto& line : brep_.component_mesh_vertices(
                      unique_vertex_index, Line3D::component_type_static() ) )
             {
                 if( !brep_.Relationships::is_boundary(
@@ -89,7 +88,7 @@ namespace geode
             index_t unique_vertex_index ) const
         {
             if( brep_
-                    .mesh_component_vertices(
+                    .component_mesh_vertices(
                         unique_vertex_index, Corner3D::component_type_static() )
                     .size()
                 > 1 )
@@ -107,7 +106,7 @@ namespace geode
         bool BRepCornersTopologyImpl::corner_has_multiple_embeddings(
             index_t unique_vertex_index ) const
         {
-            const auto corners = brep_.mesh_component_vertices(
+            const auto corners = brep_.component_mesh_vertices(
                 unique_vertex_index, Corner3D::component_type_static() );
             if( !corners.empty()
                 && brep_.nb_embeddings( corners[0].component_id.id() ) > 1 )
@@ -128,7 +127,7 @@ namespace geode
         bool BRepCornersTopologyImpl::corner_is_not_internal_nor_boundary(
             index_t unique_vertex_index ) const
         {
-            const auto corners = brep_.mesh_component_vertices(
+            const auto corners = brep_.component_mesh_vertices(
                 unique_vertex_index, Corner3D::component_type_static() );
             if( !corners.empty()
                 && brep_.nb_embeddings( corners[0].component_id.id() ) < 1
@@ -147,39 +146,16 @@ namespace geode
             return false;
         }
 
-        bool BRepCornersTopologyImpl::
-            corner_is_internal_with_multiple_incidences(
-                index_t unique_vertex_index ) const
-        {
-            const auto corners = brep_.mesh_component_vertices(
-                unique_vertex_index, Corner3D::component_type_static() );
-            if( !corners.empty()
-                && brep_.nb_embeddings( corners[0].component_id.id() ) == 1
-                && brep_.nb_incidences( corners[0].component_id.id() ) > 1 )
-            {
-                if( verbose_ )
-                {
-                    Logger::info( "Unique vertex with index ",
-                        unique_vertex_index,
-                        " is associated to corner with uuid '",
-                        corners[0].component_id.id().string(),
-                        "', which is embedded but has multiple incidences." );
-                }
-                return true;
-            }
-            return false;
-        }
-
         bool BRepCornersTopologyImpl::corner_is_part_of_line_but_not_boundary(
             index_t unique_vertex_index ) const
         {
-            const auto corners = brep_.mesh_component_vertices(
+            const auto corners = brep_.component_mesh_vertices(
                 unique_vertex_index, Corner3D::component_type_static() );
             if( !corners.empty() )
             {
                 const auto& corner_uuid = corners[0].component_id.id();
                 for( const auto& line :
-                    brep_.mesh_component_vertices(
+                    brep_.component_mesh_vertices(
                         unique_vertex_index, Line3D::component_type_static() ) )
                 {
                     if( !brep_.Relationships::is_boundary(

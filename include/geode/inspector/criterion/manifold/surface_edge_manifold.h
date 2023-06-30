@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,8 +60,7 @@ namespace geode
 
         index_t nb_non_manifold_edges() const;
 
-        const std::vector< detail::VertexCycle< std::array< index_t, 2 > > >&
-            non_manifold_edges() const;
+        std::vector< std::array< index_t, 2 > > non_manifold_edges() const;
 
     private:
         IMPLEMENTATION_MEMBER( impl_ );

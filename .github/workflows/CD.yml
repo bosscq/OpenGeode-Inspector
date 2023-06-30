@@ -9,36 +9,32 @@ jobs:
     uses: Geode-solutions/actions/.github/workflows/cd-linux.yml@master
     with:
       name: OPENGEODE_INSPECTOR
-      repos: OpenGeode;OpenGeode-IO
-    secrets:
-      TOKEN: ${{ secrets.TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+      repos: OpenGeode;OpenGeode-IO;OpenGeode-Geosciences;OpenGeode-GeosciencesIO
+    secrets: inherit
 
   release-linux-python:
     uses: Geode-solutions/actions/.github/workflows/cd-linux-python.yml@master
     with:
       name: OPENGEODE_INSPECTOR
-      repos: OpenGeode;OpenGeode-IO
-    secrets:
-      TOKEN: ${{ secrets.TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }} 
+      repos: OpenGeode;OpenGeode-IO;OpenGeode-Geosciences;OpenGeode-GeosciencesIO
+    secrets: inherit
 
   release-windows:
     uses: Geode-solutions/actions/.github/workflows/cd-windows.yml@master
     with:
       name: OPENGEODE_INSPECTOR
-      repos: OpenGeode;OpenGeode-IO
-    secrets:
-      TOKEN: ${{ secrets.TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      repos: OpenGeode;OpenGeode-IO;OpenGeode-Geosciences;OpenGeode-GeosciencesIO
+      config: RelWithDebInfo
+    secrets: inherit
 
   release-windows-python:
     uses: Geode-solutions/actions/.github/workflows/cd-windows-python.yml@master
     with:
       name: OPENGEODE_INSPECTOR
-      repos: OpenGeode;OpenGeode-IO
-    secrets:
-      TOKEN: ${{ secrets.TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }} 
+      repos: OpenGeode;OpenGeode-IO;OpenGeode-Geosciences;OpenGeode-GeosciencesIO
+    secrets: inherit
+
+  notify:
+    uses: Geode-solutions/actions/.github/workflows/end-cd.yml@master
+    needs: [release-linux, release-linux-python, release-windows, release-windows-python]
+    secrets: inherit

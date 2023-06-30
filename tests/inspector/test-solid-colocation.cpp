@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ void check_colocation()
     OPENGEODE_EXCEPTION( colocation_inspector.mesh_has_colocated_points(),
         "[Test] Solid doesn't have colocated points whereas it should have "
         "several." );
-    OPENGEODE_EXCEPTION( colocation_inspector.nb_colocated_points() == 3,
+    OPENGEODE_EXCEPTION( colocation_inspector.nb_colocated_points() == 5,
         "[Test] Solid has wrong number of colocated points." );
     const std::vector< geode::index_t > first_colocated_points_group{ 0, 1, 6 };
     OPENGEODE_EXCEPTION( colocation_inspector.colocated_points_groups()[0]
@@ -85,6 +85,7 @@ int main()
 {
     try
     {
+        geode::InspectorInspectorLibrary::initialize();
         check_non_colocation();
         check_colocation();
 

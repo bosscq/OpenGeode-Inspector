@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ void check_non_adjacency_no_bijection2D()
         adjacency_inspector.nb_edges_with_wrong_adjacency() == 1,
         "[Test] Surface should have one wrong adjacency due to "
         "non-bijection." );
-    const geode::PolygonEdge polygon_edge{ { 2, 1 } };
+    const geode::PolygonEdge polygon_edge{ 2, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[0]
             == polygon_edge,
@@ -109,12 +109,12 @@ void check_non_adjacency_wrong_edge2D()
         adjacency_inspector.nb_edges_with_wrong_adjacency() == 2,
         "[Test] Surface should have two wrong adjacencies due to wrong edge "
         "for adjacency." );
-    const geode::PolygonEdge polygon_edge1{ { 0, 1 } };
+    const geode::PolygonEdge polygon_edge1{ 0, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[0]
             == polygon_edge1,
         "[Test] Surface shows wrong first edge with adjacency problems." );
-    const geode::PolygonEdge polygon_edge2{ { 1, 1 } };
+    const geode::PolygonEdge polygon_edge2{ 1, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[1]
             == polygon_edge2,
@@ -143,13 +143,13 @@ void check_non_adjacency_inversed_triangle2D()
         adjacency_inspector.nb_edges_with_wrong_adjacency() == 2,
         "[Test] Surface should have two wrong adjacencies due to an inversed "
         "triangle." );
-    const geode::PolygonEdge polygon_edge1{ { 0, 1 } };
+    const geode::PolygonEdge polygon_edge1{ 0, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[0]
             == polygon_edge1,
         "[Test] Surface shows wrong first edge with adjacency problems due to "
         "an inversed triangle.." );
-    const geode::PolygonEdge polygon_edge2{ { 1, 0 } };
+    const geode::PolygonEdge polygon_edge2{ 1, 0 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[1]
             == polygon_edge2,
@@ -210,7 +210,7 @@ void check_non_adjacency_no_bijection3D()
         adjacency_inspector.nb_edges_with_wrong_adjacency() == 1,
         "[Test] 3D Surface should have one wrong adjacency due to "
         "non-bijection." );
-    const geode::PolygonEdge polygon_edge{ { 2, 1 } };
+    const geode::PolygonEdge polygon_edge{ 2, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[0]
             == polygon_edge,
@@ -239,12 +239,12 @@ void check_non_adjacency_wrong_edge3D()
         adjacency_inspector.nb_edges_with_wrong_adjacency() == 2,
         "[Test] 3D Surface should have two wrong adjacencies due to wrong edge "
         "for adjacency." );
-    const geode::PolygonEdge polygon_edge1{ { 0, 1 } };
+    const geode::PolygonEdge polygon_edge1{ 0, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[0]
             == polygon_edge1,
         "[Test] 3D Surface shows wrong first edge with adjacency problems." );
-    const geode::PolygonEdge polygon_edge2{ { 1, 1 } };
+    const geode::PolygonEdge polygon_edge2{ 1, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[1]
             == polygon_edge2,
@@ -273,13 +273,13 @@ void check_non_adjacency_inversed_triangle3D()
         adjacency_inspector.nb_edges_with_wrong_adjacency() == 2,
         "[Test] 3D Surface should have two wrong adjacencies due to an "
         "inversed triangle." );
-    const geode::PolygonEdge polygon_edge1{ { 0, 1 } };
+    const geode::PolygonEdge polygon_edge1{ 0, 1 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[0]
             == polygon_edge1,
         "[Test] 3D Surface shows wrong first edge with adjacency problems due "
         "to an inversed triangle.." );
-    const geode::PolygonEdge polygon_edge2{ { 1, 0 } };
+    const geode::PolygonEdge polygon_edge2{ 1, 0 };
     OPENGEODE_EXCEPTION(
         adjacency_inspector.polygon_edges_with_wrong_adjacency()[1]
             == polygon_edge2,
@@ -291,6 +291,7 @@ int main()
 {
     try
     {
+        geode::InspectorInspectorLibrary::initialize();
         check_adjacency2D();
         check_non_adjacency_no_bijection2D();
         check_non_adjacency_wrong_edge2D();

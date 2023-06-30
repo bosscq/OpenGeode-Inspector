@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -173,6 +173,7 @@ int main()
 {
     try
     {
+        geode::InspectorInspectorLibrary::initialize();
         check_non_degeneration2D();
         check_degeneration_by_colocalisation2D();
         check_degeneration_by_point_multiple_presence2D();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022 Geode-solutions
+ * Copyright (c) 2019 - 2023 Geode-solutions
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@
     pybind11::class_< SurfaceMeshEdgeManifold##dimension##D >(                 \
         module, name##dimension.c_str() )                                      \
         .def( pybind11::init< const SurfaceMesh< dimension >& >() )            \
+        .def( pybind11::init< const SurfaceMesh< dimension >&, bool >() )      \
         .def( "mesh_edges_are_manifold",                                       \
             &SurfaceMeshEdgeManifold##dimension##D::mesh_edges_are_manifold )  \
         .def( "nb_non_manifold_edges",                                         \
